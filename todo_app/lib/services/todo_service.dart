@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:ffi';
 import 'package:todo_app/model/todos.dart';
 import 'package:http/http.dart' as http;
 
@@ -6,7 +7,7 @@ import 'package:http/http.dart' as http;
 class TodoService {
   // API'den yapılacaklar listesini almak için kullanılacak URL
   final String url ="https://dummyjson.com/todos/";
-
+  final String postUrl ="https://dummyjson.com/todos/add";
   // Future ile asenkron işlemler yapabiliyoruz. await ve async var. ASP ile aynı
   // getTodos() metodu, API'den yapılacaklar listesini asenkron olarak alır.
   Future<List<Todo>> getTodos(bool complete) async {
@@ -31,5 +32,13 @@ class TodoService {
     return todos;
   }
 
-
+  Future<String> AddTodo(Todo newTodo) async{
+    final response = await http.post(
+      Uri.parse(postUrl),
+      body: json.encode(newTodo.toJson()),
+      headers: <String,String>{"content-type":"application/json",}
+      );
+    print(response.body);
+    return response.body;
+  }
 }
