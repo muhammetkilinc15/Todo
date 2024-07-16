@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:intl/intl.dart';
 import 'package:todo_app/constants/color.dart';
+import 'package:todo_app/constants/taskType.dart';
+import 'package:todo_app/model/task.dart';
 import 'package:todo_app/screens/add_new_task.dart';
 import 'package:todo_app/todoItem.dart';
 
@@ -13,9 +15,24 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-List<String> todo = ["Study Lesson", "Run 5 km", "Go to Party"];
-List<String> Completed = ["Game meetup", "Take out tash"];
+// List<String> todo = ["Study Lesson", "Run 5 km", "Go to Party"];
+// List<String> Completed = ["Game meetup", "Take out tash"];
+List<Task> todo = [
+  Task(title:"Study Lesson", description: "Study Sen211", isCompleted: false, type: Tasktype.note ),
+  Task(title:"Run 5 km", description: "Do egersize bro", isCompleted: false, type: Tasktype.calender ),
+  Task(title:"Go to Party", description: "Attend to party", isCompleted: false, type: Tasktype.constest ),
+];
 
+List<Task> Completed = [
+  Task(title:"Game meetup", description: "Valorant Time", isCompleted: true, type: Tasktype.constest ),
+  Task(title:"Take out tash", description: "Clean my room ", isCompleted: true, type: Tasktype.calender )
+];
+
+void addNewTask(Task task){
+  setState(() {
+      todo.add(task);
+  });
+}
 
   @override
   Widget build(BuildContext context) {
@@ -30,6 +47,7 @@ List<String> Completed = ["Game meetup", "Take out tash"];
     int day = now.day;
     int year = now.year;
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       home: SafeArea(
         child: Scaffold(
           backgroundColor: HexColor(backgroundColor),
@@ -81,7 +99,7 @@ List<String> Completed = ["Game meetup", "Take out tash"];
                       primary: false,
                       itemCount: todo.length,
                       itemBuilder: (context, index) {
-                        return Todoitem(title: todo[index]);
+                        return Todoitem(task: todo[index]);
                       },
                     ),
                   ),
@@ -108,7 +126,7 @@ List<String> Completed = ["Game meetup", "Take out tash"];
                     shrinkWrap: true,
                     itemCount: Completed.length,
                     itemBuilder: (context, index) {
-                      return Todoitem(title: Completed[index]);
+                      return Todoitem(task: Completed[index]);
                     },
                   )),
                 ),
@@ -116,7 +134,9 @@ List<String> Completed = ["Game meetup", "Take out tash"];
               ElevatedButton(
                   onPressed: () {
                     Navigator.of(context).push(
-                      MaterialPageRoute(builder: (context) =>  const AddNewTask(),)
+                      MaterialPageRoute(builder: (context) =>  AddNewTask(AddTask: (newTask)=>addNewTask(newTask),
+                      ),
+                      )
                     );
                   }, child: const Text("Add New Task"))
             ],
