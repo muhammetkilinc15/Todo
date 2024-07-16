@@ -16,28 +16,46 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-List<Task> todo = [
-  Task(title:"Study Lesson", description: "Study Sen211", isCompleted: false, type: Tasktype.note ),
-  Task(title:"Run 5 km", description: "Do egersize bro", isCompleted: false, type: Tasktype.calender ),
-  Task(title:"Go to Party", description: "Attend to party", isCompleted: false, type: Tasktype.constest ),
-];
+  List<Task> todo = [
+    Task(
+        title: "Study Lesson",
+        description: "Study Sen211",
+        isCompleted: false,
+        type: Tasktype.note),
+    Task(
+        title: "Run 5 km",
+        description: "Do egersize bro",
+        isCompleted: false,
+        type: Tasktype.calender),
+    Task(
+        title: "Go to Party",
+        description: "Attend to party",
+        isCompleted: false,
+        type: Tasktype.constest),
+  ];
 
-List<Task> Completed = [
-  Task(title:"Game meetup", description: "Valorant Time", isCompleted: true, type: Tasktype.constest ),
-  Task(title:"Take out tash", description: "Clean my room ", isCompleted: true, type: Tasktype.calender )
-];
+  List<Task> Completed = [
+    Task(
+        title: "Game meetup",
+        description: "Valorant Time",
+        isCompleted: true,
+        type: Tasktype.constest),
+    Task(
+        title: "Take out tash",
+        description: "Clean my room ",
+        isCompleted: true,
+        type: Tasktype.calender)
+  ];
 
-void addNewTask(Task task){
-  setState(() {
+  void addNewTask(Task task) {
+    setState(() {
       todo.add(task);
-  });
-}
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-    TodoService todoService= TodoService();
-    todoService.getTodos();
-
+    TodoService todoService = TodoService();
     double deviceWidth = MediaQuery.of(context).size.width;
     double deviceHeight = MediaQuery.of(context).size.height;
 
@@ -78,7 +96,8 @@ void addNewTask(Task task){
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                    ),const Padding(
+                    ),
+                    const Padding(
                       padding: EdgeInsets.only(top: 40),
                       child: Text(
                         "My Todo List",
@@ -96,15 +115,22 @@ void addNewTask(Task task){
                 child: Padding(
                   padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
                   child: SingleChildScrollView(
-                    child: ListView.builder(
-                      shrinkWrap: true,
-                      primary: false,
-                      itemCount: todo.length,
-                      itemBuilder: (context, index) {
-                        return Todoitem(task: todo[index]);
-                      },
-                    ),
-                  ),
+                      child: FutureBuilder(
+                          future: todoService.getTodos(false),
+                          builder: (context, snapshot) {
+                            if (snapshot.data == null) {
+                              return const CircularProgressIndicator();
+                            }
+                            ;
+                            return ListView.builder(
+                              shrinkWrap: true,
+                              primary: false,
+                              itemCount: snapshot.data!.length,
+                              itemBuilder: (context, index) {
+                                return Todoitem(task: snapshot.data![index]);
+                              },
+                            );
+                          })),
                 ),
               ),
               // Completed Text
@@ -121,26 +147,35 @@ void addNewTask(Task task){
               // Bottom Column
               Expanded(
                 child: Padding(
-                  padding: const  EdgeInsets.fromLTRB(20, 10, 20, 10),
+                  padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
                   child: SingleChildScrollView(
-                      child: ListView.builder(
-                    primary: false,
-                    shrinkWrap: true,
-                    itemCount: Completed.length,
-                    itemBuilder: (context, index) {
-                      return Todoitem(task: Completed[index]);
-                    },
-                  )),
+                      child: FutureBuilder(
+                          future: todoService.getTodos(true),
+                          builder: (context, snapshot) {
+                            if (snapshot.data == null) {
+                              return const CircularProgressIndicator();
+                            }
+                            ;
+                            return ListView.builder(
+                              shrinkWrap: true,
+                              primary: false,
+                              itemCount: snapshot.data!.length,
+                              itemBuilder: (context, index) {
+                                return Todoitem(task: snapshot.data![index]);
+                              },
+                            );
+                          })),
                 ),
               ),
               ElevatedButton(
                   onPressed: () {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(builder: (context) =>  AddNewTask(AddTask: (newTask)=>addNewTask(newTask),
+                    Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => AddNewTask(
+                        AddTask: (newTask) => addNewTask(newTask),
                       ),
-                      )
-                    );
-                  }, child: const Text("Add New Task"))
+                    ));
+                  },
+                  child: const Text("Add New Task"))
             ],
           ),
         ),
