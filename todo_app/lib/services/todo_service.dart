@@ -9,7 +9,7 @@ class TodoService {
 
   // Future ile asenkron işlemler yapabiliyoruz. await ve async var. ASP ile aynı
   // getTodos() metodu, API'den yapılacaklar listesini asenkron olarak alır.
-  Future<List<Todo>> getTodos() async {
+  Future<List<Todo>> getTodos(bool complete) async {
     // HTTP GET isteği yapılıyor ve yanıt bekleniyor
     final response = await http.get(Uri.parse(url)); //
     
@@ -21,10 +21,15 @@ class TodoService {
     
     // Her bir JSON nesnesi Todo modeline dönüştürülüyor ve listeye ekleniyor
     res.forEach((element) {
-      todos.add(Todo.fromJson(element));
+      Todo task = Todo.fromJson(element);
+      if (task.completed==complete){
+        todos.add(task);
+      }
     });
     
     // Tamamlanmış Todo listesi geri döndürülüyor
     return todos;
   }
+
+
 }
