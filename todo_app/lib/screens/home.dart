@@ -5,6 +5,7 @@ import 'package:todo_app/constants/color.dart';
 import 'package:todo_app/constants/taskType.dart';
 import 'package:todo_app/model/task.dart';
 import 'package:todo_app/screens/add_new_task.dart';
+import 'package:todo_app/services/todo_service.dart';
 import 'package:todo_app/todoItem.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -15,8 +16,6 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-// List<String> todo = ["Study Lesson", "Run 5 km", "Go to Party"];
-// List<String> Completed = ["Game meetup", "Take out tash"];
 List<Task> todo = [
   Task(title:"Study Lesson", description: "Study Sen211", isCompleted: false, type: Tasktype.note ),
   Task(title:"Run 5 km", description: "Do egersize bro", isCompleted: false, type: Tasktype.calender ),
@@ -36,6 +35,9 @@ void addNewTask(Task task){
 
   @override
   Widget build(BuildContext context) {
+    TodoService todoService= TodoService();
+    todoService.getTodos();
+
     double deviceWidth = MediaQuery.of(context).size.width;
     double deviceHeight = MediaQuery.of(context).size.height;
 
