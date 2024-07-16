@@ -3,10 +3,12 @@ import 'package:hexcolor/hexcolor.dart';
 import 'package:todo_app/constants/color.dart';
 import 'package:todo_app/constants/taskType.dart';
 import 'package:todo_app/model/task.dart';
+import 'package:todo_app/model/todos.dart';
+import 'package:todo_app/services/todo_service.dart';
 
 class AddNewTask extends StatefulWidget {
-  const AddNewTask({super.key,required this.AddTask});
-  final void Function (Task newTask) AddTask;
+  const AddNewTask({super.key, required this.AddTask});
+  final void Function(Task newTask) AddTask;
   // passing function as paramater
 
   @override
@@ -19,6 +21,8 @@ class _AddNewTaskState extends State<AddNewTask> {
   TextEditingController timeController = TextEditingController();
   TextEditingController descriptionController = TextEditingController();
   Tasktype tasktype = Tasktype.note;
+
+  TodoService todoService = TodoService();
 
   @override
   Widget build(BuildContext context) {
@@ -34,7 +38,8 @@ class _AddNewTaskState extends State<AddNewTask> {
                 decoration: const BoxDecoration(
                   color: Colors.purple,
                   image: DecorationImage(
-                      image: AssetImage("lib/assets/images/add_new_task_header.png"),
+                      image: AssetImage(
+                          "lib/assets/images/add_new_task_header.png"),
                       fit: BoxFit.cover),
                 ),
                 width: deviceWidth,
@@ -43,7 +48,8 @@ class _AddNewTaskState extends State<AddNewTask> {
                   children: [
                     IconButton(
                       onPressed: () {
-                        Navigator.of(context).pop(); // Bunu pop ederek bir önceki sayfaya döneceğiz
+                        Navigator.of(context)
+                            .pop(); // Bunu pop ederek bir önceki sayfaya döneceğiz
                       },
                       icon: const Icon(
                         Icons.close,
@@ -66,9 +72,9 @@ class _AddNewTaskState extends State<AddNewTask> {
               ),
               const SizedBox(height: 20),
               const Padding(
-                padding: EdgeInsets.only(top: 10),
-                child: const Text("Task title")),
-               Padding(
+                  padding: EdgeInsets.only(top: 10),
+                  child: const Text("Task title")),
+              Padding(
                 padding: EdgeInsets.symmetric(horizontal: 40),
                 child: TextField(
                   controller: titleController,
@@ -78,25 +84,26 @@ class _AddNewTaskState extends State<AddNewTask> {
                   ),
                 ),
               ),
-               Padding(
+              Padding(
                 padding: EdgeInsets.only(top: 20),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                     const Text("Category"),
+                    const Text("Category"),
                     GestureDetector(
                       onTap: () {
                         ScaffoldMessenger.of(context).showSnackBar(
-                           const SnackBar(
+                          const SnackBar(
                             duration: Duration(milliseconds: 300),
                             content: Text("Category selected"),
                           ),
                         );
                         setState(() {
-                          tasktype= Tasktype.note;
+                          tasktype = Tasktype.note;
                         });
                       },
-                      child: Image.asset("lib/assets/images/category_1.png", width: 50, height: 50),
+                      child: Image.asset("lib/assets/images/category_1.png",
+                          width: 50, height: 50),
                     ),
                     GestureDetector(
                       onTap: () {
@@ -106,11 +113,12 @@ class _AddNewTaskState extends State<AddNewTask> {
                             content: Text("Category selected"),
                           ),
                         );
-                          setState(() {
-                          tasktype= Tasktype.calender;
+                        setState(() {
+                          tasktype = Tasktype.calender;
                         });
                       },
-                      child: Image.asset("lib/assets/images/category_2.png", width: 50, height: 50),
+                      child: Image.asset("lib/assets/images/category_2.png",
+                          width: 50, height: 50),
                     ),
                     GestureDetector(
                       onTap: () {
@@ -120,72 +128,86 @@ class _AddNewTaskState extends State<AddNewTask> {
                             content: Text("Category selected"),
                           ),
                         );
-                          setState(() {
-                          tasktype= Tasktype.constest;
+                        setState(() {
+                          tasktype = Tasktype.constest;
                         });
                       },
-                      child: Image.asset("lib/assets/images/category_3.png", width: 50, height: 50),
+                      child: Image.asset("lib/assets/images/category_3.png",
+                          width: 50, height: 50),
                     ),
                   ],
                 ),
               ),
-               Padding(
+              Padding(
                 padding: const EdgeInsets.only(top: 10),
-                child:  Row(
+                child: Row(
                   children: [
                     Expanded(
-                      child: Column(children: [
-                        const Text("Date"),
-                        Padding(
-                          padding:  const EdgeInsets.symmetric(horizontal: 20),
-                          child: TextField(
-                            controller:  dateController,
-                            decoration: const InputDecoration(filled: true,
-                            fillColor: Colors.white),
-                          )
-                        )
-                      
-                      ],),
+                      child: Column(
+                        children: [
+                          const Text("Date"),
+                          Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 20),
+                              child: TextField(
+                                controller: dateController,
+                                decoration: const InputDecoration(
+                                    filled: true, fillColor: Colors.white),
+                              ))
+                        ],
+                      ),
                     ),
-                      Expanded(
-                      child: Column(children: [
-                        const Text("Time"),
-                        Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 20),
-                          child: TextField( 
-                            controller: timeController,
-                            decoration: const  InputDecoration(filled: true,
-                            fillColor: Colors.white),))
-                      
-                            ],
-                          ),
-                      ),             
+                    Expanded(
+                      child: Column(
+                        children: [
+                          const Text("Time"),
+                          Padding(
+                              padding: EdgeInsets.symmetric(horizontal: 20),
+                              child: TextField(
+                                controller: timeController,
+                                decoration: const InputDecoration(
+                                    filled: true, fillColor: Colors.white),
+                              ))
+                        ],
+                      ),
+                    ),
                   ],
-                  
                 ),
               ),
-              const  Padding(
-                padding: EdgeInsets.only(top: 10),
-                child:  Text("Description")),
-                SizedBox(
-                    height: 300,
-                    child: TextField(
-                      controller: descriptionController,
-                      expands: true,
-                      maxLines: null,
-                      decoration: InputDecoration(filled: true,fillColor: Colors.white,isDense: true),
-                    )
-                  )
-              ,ElevatedButton(onPressed: (){
-                Task newTask =Task(title: titleController.text, description: descriptionController.text, isCompleted: false, type: tasktype);
-                widget.AddTask(newTask);  
-                Navigator.pop(context);
-              }, child: Text("Save") )
+              const Padding(
+                  padding: EdgeInsets.only(top: 10),
+                  child: Text("Description")),
+              SizedBox(
+                  height: 300,
+                  child: TextField(
+                    controller: descriptionController,
+                    expands: true,
+                    maxLines: null,
+                    decoration: InputDecoration(
+                        filled: true, fillColor: Colors.white, isDense: true),
+                  )),
+              ElevatedButton(
+                  onPressed: () {
+                    // Task newTask = Task(
+                    //     title: titleController.text,
+                    //     description: descriptionController.text,
+                    //     isCompleted: false,
+                    //     type: tasktype);
+                    // widget.AddTask(newTask);
+                    saveTodo();
+                    Navigator.pop(context);
+                  },
+                  child: Text("Save"))
             ],
-            
           ),
         ),
       ),
     );
+  }
+
+  void saveTodo() {
+    Todo newTodo =
+    Todo(id: -1, todo: titleController.text, completed: false, userId: int.parse(dateController.text));
+    todoService.AddTodo(newTodo);
   }
 }
